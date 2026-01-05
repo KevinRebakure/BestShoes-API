@@ -151,14 +151,41 @@
                 </configuration>
             </plugin>
 
+<!--            For allowing maven to read .env file variables -->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>properties-maven-plugin</artifactId>-->
+<!--                <version>1.2.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>initialize</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>read-project-properties</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <files>-->
+<!--                                <file>.env</file>-->
+<!--                            </files>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>11.14.1</version>
+                <!--                <configuration>-->
+                <!--                    <url>jdbc:postgresql://localhost:5432/bestshoes</url>-->
+                <!--                    <user>root</user>-->
+                <!--                    <password>Password@1234</password>-->
+                <!--                    <cleanDisabled>false</cleanDisabled>-->
+                <!--                </configuration>-->
                 <configuration>
-                    <url>jdbc:postgresql://db.kkraejhcqptqeqqolbwc.supabase.co:5432/postgres</url>
-                    <user>postgres</user>
-                    <password>91630@Rebakure</password>
+                    <url>${env.DB_URL}</url>
+                    <user>${env.DB_USER}</user>
+                    <password>${env.DB_PASSWORD}</password>
                     <cleanDisabled>false</cleanDisabled>
                 </configuration>
             </plugin>
