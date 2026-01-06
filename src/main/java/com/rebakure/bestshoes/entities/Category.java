@@ -28,15 +28,12 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    @JsonBackReference("category-parent")
     private Category parent;
 
     @OneToMany(mappedBy = "parent")
-    @JsonManagedReference("category-parent")
     private Set<Category> categories = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "category")
-    @JsonManagedReference("category-products")
     private Set<Product> products = new LinkedHashSet<>();
 
 }

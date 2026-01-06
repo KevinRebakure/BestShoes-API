@@ -58,7 +58,6 @@ public class Variant {
     private String stockKeepingUnit;
 
     @OneToMany(mappedBy = "variant")
-    @JsonManagedReference("variant-products")
     private Set<Product> products = new LinkedHashSet<>();
 
 }

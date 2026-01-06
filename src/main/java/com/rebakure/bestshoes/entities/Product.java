@@ -26,14 +26,12 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonBackReference("category-products")
     private Category category;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "variant_id", nullable = false)
-    @JsonBackReference("variant-products")
     private Variant variant;
 
     @Size(max = 255)
