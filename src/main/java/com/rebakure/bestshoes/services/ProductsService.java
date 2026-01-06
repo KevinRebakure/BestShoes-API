@@ -39,6 +39,8 @@ public class ProductsService {
 
         productRepository.save(product);
 
+        variant.addProduct(product);
+
         return productMapper.entityToDto(product);
     }
 }

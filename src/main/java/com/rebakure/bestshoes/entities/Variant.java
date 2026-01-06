@@ -1,7 +1,5 @@
 package com.rebakure.bestshoes.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -60,4 +58,11 @@ public class Variant {
     @OneToMany(mappedBy = "variant")
     private Set<Product> products = new LinkedHashSet<>();
 
+    public void addProduct(Product product) {
+        products.add(product);
+    }
+
+    public void removeProduct(Product product) {
+        products.remove(product);
+    }
 }
