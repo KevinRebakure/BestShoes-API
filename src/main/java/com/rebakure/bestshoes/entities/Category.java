@@ -1,5 +1,7 @@
 package com.rebakure.bestshoes.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,12 +28,15 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
+    @JsonBackReference("category-parent")
     private Category parent;
 
     @OneToMany(mappedBy = "parent")
+    @JsonManagedReference("category-parent")
     private Set<Category> categories = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "category")
+    @JsonManagedReference("category-products")
     private Set<Product> products = new LinkedHashSet<>();
 
 }
