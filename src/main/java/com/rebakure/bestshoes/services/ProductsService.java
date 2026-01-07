@@ -5,8 +5,7 @@ import com.rebakure.bestshoes.dtos.ProductRequest;
 import com.rebakure.bestshoes.entities.Category;
 import com.rebakure.bestshoes.entities.Product;
 import com.rebakure.bestshoes.entities.Variant;
-import com.rebakure.bestshoes.exceptions.CategoryNotFoundException;
-import com.rebakure.bestshoes.exceptions.VariantNotFoundException;
+import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.ProductMapper;
 import com.rebakure.bestshoes.repositories.CategoryRepository;
 import com.rebakure.bestshoes.repositories.ProductRepository;
@@ -26,10 +25,10 @@ public class ProductsService {
         Product product = new Product();
 
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+                .orElseThrow(() -> new NotFoundException("Category not found"));
 
         Variant variant = variantRepository.findById(request.getVariantId())
-                .orElseThrow(() -> new VariantNotFoundException("Check the store for available variants."));
+                .orElseThrow(() -> new NotFoundException("Check the store for available variants."));
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());

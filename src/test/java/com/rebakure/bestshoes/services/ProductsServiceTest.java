@@ -5,7 +5,7 @@ import com.rebakure.bestshoes.dtos.ProductRequest;
 import com.rebakure.bestshoes.entities.Category;
 import com.rebakure.bestshoes.entities.Product;
 import com.rebakure.bestshoes.entities.Variant;
-import com.rebakure.bestshoes.exceptions.CategoryNotFoundException;
+import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.ProductMapper;
 import com.rebakure.bestshoes.repositories.CategoryRepository;
 import com.rebakure.bestshoes.repositories.ProductRepository;
@@ -121,7 +121,7 @@ class ProductsServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> productsService.addProduct(request))
-                .isInstanceOf(CategoryNotFoundException.class)
+                .isInstanceOf(NotFoundException.class)
                 .hasMessage("Category not found");
 
         verify(categoryRepository).findById(1);

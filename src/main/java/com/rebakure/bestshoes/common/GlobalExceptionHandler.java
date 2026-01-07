@@ -2,8 +2,7 @@ package com.rebakure.bestshoes.common;
 
 import com.rebakure.bestshoes.dtos.ErrorDto;
 import com.rebakure.bestshoes.dtos.MultipleErrorsDto;
-import com.rebakure.bestshoes.exceptions.CategoryNotFoundException;
-import com.rebakure.bestshoes.exceptions.VariantNotFoundException;
+import com.rebakure.bestshoes.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -20,22 +19,10 @@ public class GlobalExceptionHandler {
 
 
 
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleCategoryNotFoundException(CategoryNotFoundException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorDto> handleCategoryNotFoundException(NotFoundException e) {
         ErrorDto errorDto = new ErrorDto(
-                "Category Not Found",
-                HttpStatus.NOT_FOUND.value(),
-                e.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
-    }
-
-
-    @ExceptionHandler(VariantNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleVariantNotFoundException(VariantNotFoundException e) {
-        ErrorDto errorDto = new ErrorDto(
-                "Variant Not Found",
+                "Resource Not Found",
                 HttpStatus.NOT_FOUND.value(),
                 e.getMessage(),
                 LocalDateTime.now()
