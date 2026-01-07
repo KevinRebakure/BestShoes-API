@@ -13,6 +13,7 @@ import com.rebakure.bestshoes.repositories.ProductRepository;
 import com.rebakure.bestshoes.repositories.VariantRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -86,5 +87,15 @@ public class ProductsService {
 
     public List<ProductDto> findAllProducts() {
         return productRepository.findAll().stream().map(productMapper::entityToDto).toList();
+    }
+
+    public void deleteProduct(Long id) {
+        var product = productRepository.findById(id).orElse(null);
+
+        if (product == null) {
+            throw new NotFoundException("Product not found");
+        }
+
+        productRepository.delete(product);
     }
 }

@@ -39,4 +39,13 @@ public class CategoriesController {
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return ResponseEntity.ok().body(categoriesService.findAllCategories());
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteCategory(
+            @PathVariable
+            @Min(value = 1, message = "id should be a positive integer")
+            Integer id
+    ) {
+        categoriesService.deleteCategory(id);
+    }
 }

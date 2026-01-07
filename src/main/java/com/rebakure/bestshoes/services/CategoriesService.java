@@ -9,6 +9,7 @@ import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.CategoryMapper;
 import com.rebakure.bestshoes.repositories.CategoryRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
@@ -59,5 +60,15 @@ public class CategoriesService {
 
     public List<CategoryDto> findAllCategories() {
         return categoryRepository.findAll().stream().map(categoryMapper::entityToDto).toList();
+    }
+
+    public void deleteCategory(Integer id) {
+        Category category =  categoryRepository.findCategoryById(id);
+
+        if (category == null) {
+            throw new NotFoundException("Category with id " + id + " not found.");
+        }
+
+        categoryRepository.delete(category);
     }
 }

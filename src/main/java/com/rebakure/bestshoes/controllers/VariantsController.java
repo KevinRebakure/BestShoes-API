@@ -48,4 +48,13 @@ public class VariantsController {
     public ResponseEntity<List<VariantDto>> getVariant() {
         return ResponseEntity.ok().body(variantsService.findAllVariants());
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteVariant(
+            @PathVariable
+            @Min(value = 1, message = "id should be a positive integer")
+            Long id
+    ) {
+        variantsService.deleteVariant(id);
+    }
 }

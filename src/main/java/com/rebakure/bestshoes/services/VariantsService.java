@@ -9,6 +9,7 @@ import com.rebakure.bestshoes.mappers.VariantMapper;
 import com.rebakure.bestshoes.repositories.VariantRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +64,15 @@ public class VariantsService {
 
     public List<VariantDto> findAllVariants() {
         return variantRepository.findAll().stream().map(variantMapper::entityToDto).toList();
+    }
+
+    public void deleteVariant(Long id) {
+        var variant = variantRepository.findVariantById(id);
+
+        if (variant == null) {
+            throw new NotFoundException("Variant not found");
+        }
+
+        variantRepository.delete(variant);
     }
 }
