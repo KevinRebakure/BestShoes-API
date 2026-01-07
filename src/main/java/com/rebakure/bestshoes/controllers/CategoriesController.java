@@ -4,13 +4,16 @@ import com.rebakure.bestshoes.dtos.CategoryDto;
 import com.rebakure.bestshoes.dtos.CategoryRequest;
 import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.services.CategoriesService;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/categories")
 @AllArgsConstructor
+@Validated
 public class CategoriesController {
     private final CategoriesService categoriesService;
 
@@ -22,7 +25,9 @@ public class CategoriesController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDto> updateCategory(
-            @PathVariable Integer id,
+            @PathVariable
+            @Min(value = 1, message = "id should be a positive integer")
+            Integer id,
             @RequestBody UpdateCategoryRequest request) {
         return ResponseEntity.ok().body(categoriesService.updateCategory(id, request));
     }

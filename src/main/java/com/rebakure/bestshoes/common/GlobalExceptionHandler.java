@@ -4,15 +4,20 @@ import com.rebakure.bestshoes.dtos.ErrorResponse;
 import com.rebakure.bestshoes.dtos.ValidationErrorsResponse;
 import com.rebakure.bestshoes.exceptions.ConflictException;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tools.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +95,84 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ValidationErrorsResponse> handleConstraintViolation(
+            ConstraintViolationException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation -> {
+            String propertyPath = violation.getPropertyPath().toString();
+            String message = violation.getMessage();
+            // Extract parameter name from path like "getUserById.id"
+            String paramName = propertyPath.contains(".")
+                    ? propertyPath.substring(propertyPath.lastIndexOf('.') + 1)
+                    : propertyPath;
+            errors.put(paramName, message);
+        });
+
+        ValidationErrorsResponse response = new ValidationErrorsResponse(
+                errors,
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(
+            MethodArgumentTypeMismatchException ex) {
+
+        String message = String.format("Parameter '%s' should be of type %s",
+                ex.getParameter().getParameterName(),
+                ex.getParameter().getParameterType().getSimpleName());
+
+        ErrorResponse response = new ErrorResponse(
+                "Type Mismatch",
+                HttpStatus.BAD_REQUEST.value(),
+                message,
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParams(
+            MissingServletRequestParameterException ex) {
+
+        String message = String.format("Required parameter '%s' of type '%s' is missing",
+                ex.getParameterName(),
+                ex.getParameterType());
+
+        ErrorResponse response = new ErrorResponse(
+                "Missing Parameter",
+                HttpStatus.BAD_REQUEST.value(),
+                message,
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex) {
+
+        String message = String.format("Request method '%s' not supported. Supported methods: %s",
+                ex.getMethod(),
+                Arrays.toString(ex.getSupportedMethods()));
+
+        ErrorResponse response = new ErrorResponse(
+                "Method Not Allowed",
+                HttpStatus.METHOD_NOT_ALLOWED.value(),
+                message,
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
     }
 
     @ExceptionHandler(IllegalStateException.class)
