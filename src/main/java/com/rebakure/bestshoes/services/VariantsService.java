@@ -24,7 +24,6 @@ public class VariantsService {
        );
 
        if(variant.isPresent()){
-           System.out.println("🚀[ERROR] Variant already exists");
            throw new ConflictException("Variant already exists");
        }
 

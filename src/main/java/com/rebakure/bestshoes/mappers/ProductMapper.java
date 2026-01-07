@@ -1,9 +1,9 @@
 package com.rebakure.bestshoes.mappers;
 
 import com.rebakure.bestshoes.dtos.ProductDto;
+import com.rebakure.bestshoes.dtos.UpdateProductRequest;
 import com.rebakure.bestshoes.entities.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
@@ -13,4 +13,7 @@ public interface ProductMapper {
     @Mapping(source = "variant.material", target = "material")
     @Mapping(source = "variant.brand", target = "brand")
     ProductDto entityToDto(Product product);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateProduct(UpdateProductRequest request, @MappingTarget Product product);
 }
