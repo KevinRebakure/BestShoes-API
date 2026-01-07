@@ -23,10 +23,16 @@ public class CategoriesService {
     private final CategoryMapper categoryMapper;
 
     public CategoryDto addCategory(CategoryRequest request) {
-        Category parentCategory = categoryRepository.findCategoryById(request.getParentId());
+        Category parentCategory = null;
 
-        if (parentCategory == null) {
-            throw new NotFoundException("Category with id " + request.getParentId() + " not found. Don't pass the parentId if you want to create a top level category.");
+        if (request.getParentId() != null) {
+            parentCategory = categoryRepository
+                    .findCategoryById(request.getParentId());
+            if (parentCategory == null) {
+                throw new NotFoundException(
+                        "Category with id " + request.getParentId() + " not found"
+                );
+            }
         }
 
         var category = new Category();

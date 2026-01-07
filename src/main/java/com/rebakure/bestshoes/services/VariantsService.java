@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,13 +31,19 @@ public class VariantsService {
        );
 
        if(variant.isPresent()){
+           System.out.println("🚀 Variant already exists");
            throw new ConflictException("Variant already exists");
        }
 
-       var result = variantMapper.requestToEntity(request);
-       variantRepository.save(result);
+       // Handling other database errors like unique constraint on sku column
+        try {
+            var result = variantMapper.requestToEntity(request);
+            variantRepository.save(result);
 
-       return variantMapper.entityToDto(result);
+            return variantMapper.entityToDto(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConflictException("Variant already exists");
+        }
     }
 
     @Transactional
