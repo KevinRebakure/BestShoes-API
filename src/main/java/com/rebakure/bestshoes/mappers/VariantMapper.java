@@ -12,7 +12,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring")
 public interface VariantMapper {
    Variant requestToEntity(VariantRequest request);
-   VariantDto  entityToDto(Variant variant);
+   VariantDto entityToDto(Variant variant);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
    void update(UpdateVariantRequest request, @MappingTarget Variant variant);

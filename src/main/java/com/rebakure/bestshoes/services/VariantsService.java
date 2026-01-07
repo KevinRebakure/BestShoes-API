@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class VariantsService {
@@ -47,5 +49,19 @@ public class VariantsService {
         variantMapper.update(request,variant);
         variantRepository.save(variant);
         return variantMapper.entityToDto(variant);
+    }
+
+    public VariantDto findVariantById(Long id) {
+        var variant = variantRepository.findVariantById(id);
+
+        if (variant == null) {
+            throw new NotFoundException("Variant not found");
+        }
+
+        return variantMapper.entityToDto(variant);
+    }
+
+    public List<VariantDto> findAllVariants() {
+        return variantRepository.findAll().stream().map(variantMapper::entityToDto).toList();
     }
 }

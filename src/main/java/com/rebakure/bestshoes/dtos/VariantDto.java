@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 @Data
 public class VariantDto {
+    private Long id;
     private String brand;
     private String color;
     private String material;

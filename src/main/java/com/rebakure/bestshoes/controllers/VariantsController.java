@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/variants")
 @AllArgsConstructor
@@ -31,5 +33,19 @@ public class VariantsController {
             Long id,
             @Valid @RequestBody UpdateVariantRequest request) {
         return ResponseEntity.ok().body(variantsService.updateVariant(id, request));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<VariantDto> getVariant(
+            @PathVariable
+            @Min(value = 1, message = "id should be a positive integer")
+            Long id
+    ) {
+        return ResponseEntity.ok().body(variantsService.findVariantById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<VariantDto>> getVariant() {
+        return ResponseEntity.ok().body(variantsService.findAllVariants());
     }
 }
