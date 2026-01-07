@@ -2,6 +2,7 @@ package com.rebakure.bestshoes.services;
 
 import com.rebakure.bestshoes.dtos.CategoryDto;
 import com.rebakure.bestshoes.dtos.CategoryRequest;
+import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.entities.Category;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
@@ -11,6 +12,8 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -52,5 +55,9 @@ public class CategoriesService {
         categoryMapper.update(request, category);
         categoryRepository.save(category);
         return categoryMapper.entityToDto(category);
+    }
+
+    public List<CategoryDto> findAllCategories() {
+        return categoryRepository.findAll().stream().map(categoryMapper::entityToDto).toList();
     }
 }

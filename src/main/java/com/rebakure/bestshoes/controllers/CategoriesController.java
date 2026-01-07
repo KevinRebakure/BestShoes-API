@@ -2,6 +2,7 @@ package com.rebakure.bestshoes.controllers;
 
 import com.rebakure.bestshoes.dtos.CategoryDto;
 import com.rebakure.bestshoes.dtos.CategoryRequest;
+import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.services.CategoriesService;
 import jakarta.validation.constraints.Min;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
@@ -30,5 +33,10 @@ public class CategoriesController {
             Integer id,
             @RequestBody UpdateCategoryRequest request) {
         return ResponseEntity.ok().body(categoriesService.updateCategory(id, request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        return ResponseEntity.ok().body(categoriesService.findAllCategories());
     }
 }
