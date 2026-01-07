@@ -9,6 +9,9 @@ spring:
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
 logging:
   level:
     org.springframework.security: DEBUG

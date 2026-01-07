@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-public class MultipleErrorsDto {
+public class ValidationErrorsResponse {
     private final Map<String,String> errors;
     private final Integer status;
     private final LocalDateTime timestamp;

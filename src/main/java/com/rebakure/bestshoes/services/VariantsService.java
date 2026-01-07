@@ -1,11 +1,36 @@
 package com.rebakure.bestshoes.services;
 
+import com.rebakure.bestshoes.dtos.VariantDto;
+import com.rebakure.bestshoes.dtos.VariantRequest;
+import com.rebakure.bestshoes.exceptions.ConflictException;
+import com.rebakure.bestshoes.mappers.VariantMapper;
+import com.rebakure.bestshoes.repositories.VariantRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class VariantsService {
+    private VariantRepository variantRepository;
+    private VariantMapper variantMapper;
 
+    public VariantDto addVariant(@Valid VariantRequest request) {
+       var variant = variantRepository.findUnique(
+               request.getBrand(),
+               request.getMaterial(),
+               request.getColor(),
+               request.getSize()
+       );
 
+       if(variant.isPresent()){
+           System.out.println("🚀[ERROR] Variant already exists");
+           throw new ConflictException("Variant already exists");
+       }
+
+       var result = variantMapper.requestToEntity(request);
+       variantRepository.save(result);
+
+       return variantMapper.entityToDto(result);
+    }
 }
