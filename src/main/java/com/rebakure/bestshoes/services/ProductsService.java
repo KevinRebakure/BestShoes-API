@@ -14,8 +14,9 @@ import com.rebakure.bestshoes.repositories.VariantRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -71,5 +72,19 @@ public class ProductsService {
         productMapper.updateProduct(request, product);
         productRepository.save(product);
         return productMapper.entityToDto(product);
+    }
+
+    public ProductDto findProductById(Long id) {
+        var product = productRepository.findProductById((id));
+
+        if (product == null) {
+            throw new NotFoundException("Product not found");
+        }
+
+        return productMapper.entityToDto(product);
+    }
+
+    public List<ProductDto> findAllProducts() {
+        return productRepository.findAll().stream().map(productMapper::entityToDto).toList();
     }
 }

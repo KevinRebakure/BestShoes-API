@@ -3,6 +3,7 @@ package com.rebakure.bestshoes.controllers;
 import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.ProductRequest;
 import com.rebakure.bestshoes.dtos.UpdateProductRequest;
+import com.rebakure.bestshoes.dtos.VariantDto;
 import com.rebakure.bestshoes.services.ProductsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -31,5 +34,19 @@ public class ProductsController {
             Long id,
             @Valid @RequestBody UpdateProductRequest request) {
         return ResponseEntity.ok().body(productsService.updateProduct(id, request));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProduct(
+            @PathVariable
+            @Min(value = 1, message = "id should be a positive integer")
+            Long id
+    ) {
+        return ResponseEntity.ok().body(productsService.findProductById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        return ResponseEntity.ok().body(productsService.findAllProducts());
     }
 }
