@@ -3,8 +3,6 @@ package com.rebakure.bestshoes.controllers;
 import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.ProductRequest;
 import com.rebakure.bestshoes.dtos.UpdateProductRequest;
-import com.rebakure.bestshoes.dtos.VariantDto;
-import com.rebakure.bestshoes.repositories.ProductRepository;
 import com.rebakure.bestshoes.services.ProductsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -13,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -49,10 +48,17 @@ public class ProductsController {
     @GetMapping
     public ResponseEntity<List<ProductDto>> getProducts(
             @RequestParam(required = false)
-            String name
+            String name,
+            @RequestParam(required = false)
+            @Min(value = 1, message = "Price has to be at least $1")
+            BigDecimal maxPrice
     ) {
-        if(name != null && !name.isBlank()){
+        if (name != null && !name.isBlank()) {
             return ResponseEntity.ok(productsService.findProductByName(name));
+        }
+
+        if (maxPrice != null) {
+            return ResponseEntity.ok(productsService.findProductByMaxPrice(maxPrice));
         }
 
         return ResponseEntity.ok().body(productsService.findAllProducts());

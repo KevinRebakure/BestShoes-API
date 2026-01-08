@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -100,6 +101,11 @@ public class ProductsService {
 
     public List<ProductDto> findProductByName(String name) {
         var products = productRepository.findProductsByNameLikeIgnoreCase(name);
+        return products.stream().map(productMapper::entityToDto).toList();
+    }
+
+    public List<ProductDto> findProductByMaxPrice(BigDecimal maxPrice) {
+        var products = productRepository.findProductsByBasePriceLessThanEqual(maxPrice);
         return products.stream().map(productMapper::entityToDto).toList();
     }
 }
