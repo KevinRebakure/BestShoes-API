@@ -21,7 +21,6 @@ import java.util.List;
 @Validated
 public class ProductsController {
     private final ProductsService productsService;
-    private final ProductRepository productRepository;
 
     @PostMapping
     public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductRequest request) {
@@ -48,7 +47,14 @@ public class ProductsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
+    public ResponseEntity<List<ProductDto>> getProducts(
+            @RequestParam(required = false)
+            String name
+    ) {
+        if(name != null && !name.isBlank()){
+            return ResponseEntity.ok(productsService.findProductByName(name));
+        }
+
         return ResponseEntity.ok().body(productsService.findAllProducts());
     }
 

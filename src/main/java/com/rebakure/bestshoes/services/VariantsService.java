@@ -31,7 +31,6 @@ public class VariantsService {
        );
 
        if(variant.isPresent()){
-           System.out.println("🚀 Variant already exists");
            throw new ConflictException("Variant already exists");
        }
 
@@ -42,7 +41,7 @@ public class VariantsService {
 
             return variantMapper.entityToDto(result);
         } catch (DataIntegrityViolationException e) {
-            throw new ConflictException("Variant already exists");
+            throw new ConflictException("Variant already exists or the store keeping unit is occupied");
         }
     }
 
