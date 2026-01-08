@@ -2,6 +2,7 @@ package com.rebakure.bestshoes.common;
 
 import com.rebakure.bestshoes.dtos.ErrorResponse;
 import com.rebakure.bestshoes.dtos.ValidationErrorsResponse;
+import com.rebakure.bestshoes.exceptions.BadRequestException;
 import com.rebakure.bestshoes.exceptions.ConflictException;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -41,6 +42,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleConflictException(ConflictException e) {
         ErrorResponse errorResponse = new ErrorResponse(
                 "Conflict Exception",
+                HttpStatus.CONFLICT.value(),
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Bad request exception",
                 HttpStatus.CONFLICT.value(),
                 e.getMessage(),
                 LocalDateTime.now()

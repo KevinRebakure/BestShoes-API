@@ -24,7 +24,7 @@ public class OrderItem {
 
     @NotNull
     @Column(name = "quantity", nullable = false)
-    private Long quantity;
+    private Integer quantity;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
