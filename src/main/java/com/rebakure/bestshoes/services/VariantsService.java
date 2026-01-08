@@ -3,13 +3,13 @@ package com.rebakure.bestshoes.services;
 import com.rebakure.bestshoes.dtos.UpdateVariantRequest;
 import com.rebakure.bestshoes.dtos.VariantDto;
 import com.rebakure.bestshoes.dtos.VariantRequest;
+import com.rebakure.bestshoes.exceptions.BadRequestException;
 import com.rebakure.bestshoes.exceptions.ConflictException;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.VariantMapper;
 import com.rebakure.bestshoes.repositories.VariantRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,10 @@ public class VariantsService {
 
        if(variant.isPresent()){
            throw new ConflictException("Variant already exists");
+       }
+
+       if (request.getPrice().doubleValue() < 0) {
+           throw new BadRequestException("Price cannot be negative");
        }
 
        // Handling other database errors like unique constraint on sku column

@@ -6,6 +6,7 @@ import com.rebakure.bestshoes.dtos.UpdateProductRequest;
 import com.rebakure.bestshoes.entities.Category;
 import com.rebakure.bestshoes.entities.Product;
 import com.rebakure.bestshoes.entities.Variant;
+import com.rebakure.bestshoes.exceptions.BadRequestException;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.ProductMapper;
 import com.rebakure.bestshoes.repositories.CategoryRepository;
@@ -30,6 +31,10 @@ public class ProductsService {
     @Transactional
     public ProductDto addProduct(ProductRequest request) {
         Product product = new Product();
+
+        if (request.getBasePrice().doubleValue() < 0) {
+            throw new BadRequestException("Price can't be a negative number");
+        }
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new NotFoundException("Category not found"));
