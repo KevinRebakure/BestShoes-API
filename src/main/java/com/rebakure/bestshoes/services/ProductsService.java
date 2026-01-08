@@ -51,6 +51,8 @@ public class ProductsService {
         productRepository.save(product);
 
         variant.addProduct(product);
+        variant.setQuantity(variant.getQuantity() + 1);
+        variantRepository.save(variant);
 
         return productMapper.entityToDto(product);
     }
@@ -94,12 +96,14 @@ public class ProductsService {
         return productRepository.findAll().stream().map(productMapper::entityToDto).toList();
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
-        var product = productRepository.findById(id).orElse(null);
-
-        if (product == null) {
-            throw new NotFoundException("Product not found");
-        }
+        var product = productRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Product not found")
+        );
+        var variant = variantRepository.findById(product.getVariant().getId()).get();
+        variant.setQuantity(variant.getQuantity() - 1);
+        variantRepository.save(variant);
 
         productRepository.delete(product);
     }
