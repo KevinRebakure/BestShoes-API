@@ -3,7 +3,8 @@ A simple REST API built with Spring Boot for managing an imaginary shoes store c
 ## Important links
 <details>
   <summary>Expand the section to view the ERD: https://drawsql.app/teams/hyperprojects/diagrams/bestshoes-db</summary>
-  <img width="4120" height="2760" alt="drawSQL-image-export-2026-01-08" src="https://github.com/user-attachments/assets/cef72760-9ce8-4101-9a67-2b7b9cc8630b" />
+  <img width="4120" height="2800" alt="drawSQL-image-export-2026-01-08" src="https://github.com/user-attachments/assets/2f1bd529-9106-4153-874f-5def0af4b6db" />
+
 </details>
 
 ## Stack
