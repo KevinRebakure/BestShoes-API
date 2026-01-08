@@ -3,9 +3,9 @@ A simple REST API built with Spring Boot for managing an imaginary shoes store c
 ## Important links
 - ERD: https://drawsql.app/teams/hyperprojects/diagrams/bestshoes-db
 ## Stack
-- Java
-- Spring Boot
-- PostgreSQL
+- Java 21
+- Spring Boot 4.0.0
+- PostgreSQL (postgres:15-alpine)
 - Docker
 ## How to run the app
 1. Clone the repo: https://github.com/KevinRebakure/BestShoes-API.git
