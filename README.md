@@ -6,7 +6,7 @@ A simple REST API built with Spring Boot for managing an imaginary shoes store c
 - Java 21
 - Spring Boot 4.0.0
 - PostgreSQL (postgres:15-alpine)
-- Docker
+- Git, Docker
 ## How to run the app
 1. Clone the repo: https://github.com/KevinRebakure/BestShoes-API.git
 2. With Docker installed and Java environment configured run `docker compose up -d` to spin up the PostgreSQL database
