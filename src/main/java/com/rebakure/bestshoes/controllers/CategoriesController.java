@@ -2,11 +2,11 @@ package com.rebakure.bestshoes.controllers;
 
 import com.rebakure.bestshoes.dtos.CategoryDto;
 import com.rebakure.bestshoes.dtos.CategoryRequest;
-import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.services.CategoriesService;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,8 @@ public class CategoriesController {
     @PostMapping
     public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryRequest request) {
         var dto = categoriesService.addCategory(request);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
     }
 
     @PatchMapping("/{id}")
@@ -41,11 +42,12 @@ public class CategoriesController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCategory(
+    public ResponseEntity<Void> deleteCategory(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
             Integer id
     ) {
         categoriesService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
     }
 }

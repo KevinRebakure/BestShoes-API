@@ -7,6 +7,7 @@ import com.rebakure.bestshoes.services.VariantsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class VariantsController {
     @PostMapping
     public ResponseEntity<VariantDto> addVariant(@Valid @RequestBody VariantRequest request) {
         var dto = variantsService.addVariant(request);
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PatchMapping("/{id}")
@@ -50,11 +51,12 @@ public class VariantsController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteVariant(
+    public ResponseEntity<Void> deleteVariant(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
             Long id
     ) {
         variantsService.deleteVariant(id);
+        return ResponseEntity.noContent().build();
     }
 }

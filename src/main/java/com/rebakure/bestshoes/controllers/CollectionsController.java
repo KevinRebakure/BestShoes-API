@@ -5,6 +5,7 @@ import com.rebakure.bestshoes.services.CollectionsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,8 @@ public class CollectionsController {
     @PostMapping
     public ResponseEntity<CollectionDto> addCollection(@Valid @RequestBody CollectionRequest request) {
         var dto = collectionsService.addCollection(request);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
     }
 
     @PatchMapping("/{id}")
@@ -48,12 +50,13 @@ public class CollectionsController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCollection(
+    public ResponseEntity<Void> deleteCollection(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
             Long id
     ) {
         collectionsService.deleteCollection(id);
+        return ResponseEntity.noContent().build();
     }
 
     // Collection items
@@ -65,7 +68,7 @@ public class CollectionsController {
             Long id,
             @Valid @RequestBody CollectionItemRequest request) {
         var dto = collectionsService.addItemToCollection(id, request);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PatchMapping("/{id}/items/{itemId}")
@@ -99,11 +102,13 @@ public class CollectionsController {
     }
 
     @DeleteMapping("/items/{id}")
-    public void deleteCollectionItem(
+    public ResponseEntity<Void> deleteCollectionItem(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
             Long id
     ) {
         collectionsService.deleteCollectionItem(id);
+        return ResponseEntity.noContent().build();
+
     }
 }

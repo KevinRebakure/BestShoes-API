@@ -5,6 +5,7 @@ import com.rebakure.bestshoes.services.OrdersService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,8 @@ public class OrdersController {
     @PostMapping
     public ResponseEntity<OrderDto> addOrder(@Valid @RequestBody OrderRequest request) {
         var dto = ordersService.addOrder(request);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
     }
 
     @GetMapping("/{id}")
@@ -41,12 +43,13 @@ public class OrdersController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteOrder(
+    public ResponseEntity<Void> deleteOrder(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
             Long id
     ) {
         ordersService.deleteOrder(id);
+        return ResponseEntity.noContent().build();
     }
 
     // Order items
@@ -58,7 +61,7 @@ public class OrdersController {
             Long id,
             @Valid @RequestBody OrderItemRequest request) {
         var dto = ordersService.addItemToOrder(id, request);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PatchMapping("/{id}/items/{itemId}")
@@ -92,11 +95,12 @@ public class OrdersController {
     }
 
     @DeleteMapping("/items/{id}")
-    public void deleteOrderItem(
+    public ResponseEntity<Void> deleteOrderItem(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
             Long id
     ) {
         ordersService.deleteOrderItem(id);
+        return ResponseEntity.noContent().build();
     }
 }

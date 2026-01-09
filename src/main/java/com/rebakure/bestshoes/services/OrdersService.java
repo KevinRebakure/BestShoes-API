@@ -102,6 +102,8 @@ public class OrdersService {
                             .subtract(oldAmount)
                             .add(newAmount));
             orderRepository.save(order);
+            return orderItemMapper.entityToDto(existingItem.get());
+
         } else {
             orderItem.setOrder(order);
             orderItem.setProduct(product);
@@ -112,9 +114,9 @@ public class OrdersService {
                     order.getTotalAmount()
                             .add(calculateTotalAmount(request.getQuantity(), orderItem.getProduct().getBasePrice())));
             orderRepository.save(order);
+            return orderItemMapper.entityToDto(orderItem);
         }
 
-        return orderItemMapper.entityToDto(orderItem);
     }
 
     @Transactional

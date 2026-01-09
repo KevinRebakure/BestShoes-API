@@ -7,6 +7,7 @@ import com.rebakure.bestshoes.services.ProductsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class ProductsController {
     @PostMapping
     public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductRequest request) {
         ProductDto dto = productsService.addProduct(request);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PatchMapping("/{id}")
@@ -65,11 +66,12 @@ public class ProductsController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(
+    public ResponseEntity<Void> deleteProduct(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
             Long id
     ) {
         productsService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }
