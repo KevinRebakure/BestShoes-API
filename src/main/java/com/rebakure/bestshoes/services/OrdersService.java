@@ -7,10 +7,7 @@ import com.rebakure.bestshoes.exceptions.BadRequestException;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.OrderItemMapper;
 import com.rebakure.bestshoes.mappers.OrderMapper;
-import com.rebakure.bestshoes.repositories.OrderItemRepository;
-import com.rebakure.bestshoes.repositories.OrderRepository;
-import com.rebakure.bestshoes.repositories.ProductRepository;
-import com.rebakure.bestshoes.repositories.UserRepository;
+import com.rebakure.bestshoes.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,7 @@ public class OrdersService {
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
     private final UserRepository userRepository;
+    private final VariantRepository variantRepository;
 
     @Transactional
     public OrderDto addOrder(OrderRequest request) {
@@ -71,7 +69,7 @@ public class OrdersService {
     }
 
     // Order items
-
+    @Transactional
     public OrderItemDto addItemToOrder(Long id, OrderItemRequest request) {
         var order = orderRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Order not found")
@@ -81,15 +79,45 @@ public class OrdersService {
                 () -> new NotFoundException("Product not found")
         );
 
-        OrderItem item = new OrderItem();
-        item.setOrder(order);
-        item.setProduct(product);
-        item.setQuantity(request.getQuantity());
+        OrderItem orderItem = new OrderItem();
 
-        orderItemRepository.save(item);
-        return orderItemMapper.entityToDto(item);
+        var existingItem = orderItemRepository.findOrderItemsByProductAndOrder(product, order);
+
+        // TODO: add checks to prevent negative amounts
+
+        if (existingItem.isPresent()) {
+            var oldQuantity = existingItem.get().getQuantity();
+            var newQuantity = oldQuantity + request.getQuantity();
+            var basePrice = existingItem.get().getProduct().getBasePrice();
+
+            var oldAmount = calculateTotalAmount(oldQuantity, basePrice);
+            var newAmount = calculateTotalAmount(newQuantity, basePrice);
+
+
+            existingItem.get().setQuantity(newQuantity);
+            orderItemRepository.save(existingItem.get());
+
+            order.setTotalAmount(
+                    order.getTotalAmount()
+                            .subtract(oldAmount)
+                            .add(newAmount));
+            orderRepository.save(order);
+        } else {
+            orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(request.getQuantity());
+            orderItemRepository.save(orderItem);
+
+            order.setTotalAmount(
+                    order.getTotalAmount()
+                            .add(calculateTotalAmount(request.getQuantity(), orderItem.getProduct().getBasePrice())));
+            orderRepository.save(order);
+        }
+
+        return orderItemMapper.entityToDto(orderItem);
     }
 
+    @Transactional
     public OrderItemDto updateOrderItem(
             Long id,
             Long itemId,
@@ -101,23 +129,25 @@ public class OrdersService {
         var item = orderItemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item does not exist"));
 
-        if (request.getProductId() != null) {
-            var product = productRepository.findProductById(request.getProductId());
-            if (product == null) {
-                throw new NotFoundException("Product does not exist");
-            }
-            item.setProduct(product);
+        if (item.getQuantity() + request.getQuantity() < 1) {
+            throw new BadRequestException("You must order at least 1 item");
         }
 
-        if (request.getQuantity() != null) {
-            var quantity = request.getQuantity();
-            if (item.getQuantity() + quantity < 1) {
-                throw new BadRequestException("You must order at least 1 item");
-            }
-            item.setQuantity(item.getQuantity() + quantity);
-        }
+        var oldQuantity = item.getQuantity();
+        var newQuantity = oldQuantity + request.getQuantity();
+        var basePrice = item.getProduct().getBasePrice();
 
+        var oldAmount = calculateTotalAmount(oldQuantity, basePrice);
+        var newAmount = calculateTotalAmount(newQuantity, basePrice);
+
+        item.setQuantity(newQuantity);
         orderItemRepository.save(item);
+
+        order.setTotalAmount(
+              order.getTotalAmount().subtract(oldAmount).add(newAmount)
+        );
+
+        orderRepository.save(order);
         return orderItemMapper.entityToDto(item);
     }
 
@@ -130,10 +160,17 @@ public class OrdersService {
         return orderItemMapper.entityToDto(item);
     }
 
+    @Transactional
     public void deleteOrderItem(Long id) {
         var item = orderItemRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Item does not exist")
         );
+
+        var amount = calculateTotalAmount(item.getQuantity(), item.getProduct().getBasePrice());
+
+        var order = item.getOrder();
+        order.setTotalAmount(order.getTotalAmount().subtract(amount));
+        orderRepository.save(order);
 
         orderItemRepository.delete(item);
     }
@@ -145,5 +182,10 @@ public class OrdersService {
 
         var items = orderItemRepository.findOrderItemsByOrder((order));
         return items.stream().map(orderItemMapper::entityToDto).toList();
+    }
+
+
+    private BigDecimal calculateTotalAmount(int numberOfItems, BigDecimal basePrice) {
+        return basePrice.multiply(BigDecimal.valueOf(numberOfItems));
     }
 }

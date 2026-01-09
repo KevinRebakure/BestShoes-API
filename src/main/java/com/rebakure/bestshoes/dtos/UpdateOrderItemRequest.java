@@ -1,9 +1,10 @@
 package com.rebakure.bestshoes.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class UpdateOrderItemRequest {
-    private Long productId;
+    @NotNull(message = "Provide the number of items")
     private Integer quantity;
 }
