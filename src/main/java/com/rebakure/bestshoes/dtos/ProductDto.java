@@ -16,4 +16,5 @@ public class ProductDto {
     private String color;
     private String size;
     private String stockKeepingUnit;
+    private String quantity;
 }

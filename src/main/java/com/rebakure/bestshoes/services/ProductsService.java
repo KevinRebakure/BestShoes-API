@@ -1,5 +1,6 @@
 package com.rebakure.bestshoes.services;
 
+import com.rebakure.bestshoes.common.QuantityStatus;
 import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.ProductRequest;
 import com.rebakure.bestshoes.dtos.UpdateProductRequest;
@@ -54,7 +55,7 @@ public class ProductsService {
         variant.setQuantity(variant.getQuantity() + 1);
         variantRepository.save(variant);
 
-        return productMapper.entityToDto(product);
+        return entityToDto(product, product.getVariant(), product.getCategory());
     }
 
     @Transactional
@@ -79,7 +80,7 @@ public class ProductsService {
 
         productMapper.updateProduct(request, product);
         productRepository.save(product);
-        return productMapper.entityToDto(product);
+        return entityToDto(product, product.getVariant(), product.getCategory());
     }
 
     public ProductDto findProductById(Long id) {
@@ -89,11 +90,12 @@ public class ProductsService {
             throw new NotFoundException("Product not found");
         }
 
-        return productMapper.entityToDto(product);
+        return entityToDto(product, product.getVariant(), product.getCategory());
     }
 
     public List<ProductDto> findAllProducts() {
-        return productRepository.findAll().stream().map(productMapper::entityToDto).toList();
+        return productRepository.findAll().stream().map(product ->
+                entityToDto(product, product.getVariant(),  product.getCategory())).toList();
     }
 
     @Transactional
@@ -110,11 +112,40 @@ public class ProductsService {
 
     public List<ProductDto> findProductByName(String name) {
         var products = productRepository.findProductsByNameLikeIgnoreCase(name);
-        return products.stream().map(productMapper::entityToDto).toList();
+        return products.stream().map(product ->
+            entityToDto(product, product.getVariant(),  product.getCategory())
+        ).toList();
     }
 
     public List<ProductDto> findProductByMaxPrice(BigDecimal maxPrice) {
         var products = productRepository.findProductsByBasePriceLessThanEqual(maxPrice);
-        return products.stream().map(productMapper::entityToDto).toList();
+        return products.stream().map(product ->
+                entityToDto(product, product.getVariant(),  product.getCategory())).toList();
+    }
+
+    private ProductDto entityToDto(Product product, Variant variant, Category category) {
+        ProductDto productDto = new ProductDto();
+        productDto.setCategory(category.getName());
+        productDto.setBrand(variant.getBrand());
+        productDto.setId(product.getId());
+        productDto.setColor(variant.getColor());
+        productDto.setMaterial(variant.getMaterial());
+        productDto.setDescription(product.getDescription());
+        productDto.setBasePrice(product.getBasePrice());
+        productDto.setName(product.getName());
+        productDto.setSize(variant.getSize());
+        productDto.setStockKeepingUnit(variant.getStockKeepingUnit());
+
+        int quantity = variant.getQuantity();
+
+        if (quantity == 0) {
+            productDto.setQuantity(QuantityStatus.OUT_OF_STOCK.toString());
+        } else if (quantity < 5) {
+            productDto.setQuantity(QuantityStatus.LOW_STOCK.toString());
+        } else {
+            productDto.setQuantity(QuantityStatus.IN_STOCK.toString());
+        }
+
+        return productDto;
     }
 }
