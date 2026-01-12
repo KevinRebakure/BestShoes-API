@@ -7,11 +7,11 @@ import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.entities.Category;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.CategoryMapper;
+import com.rebakure.bestshoes.mappers.CustomProductMapper;
 import com.rebakure.bestshoes.repositories.CategoryRepository;
+import com.rebakure.bestshoes.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +21,8 @@ import java.util.List;
 public class CategoriesService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final ProductRepository productRepository;
+    private final CustomProductMapper customProductMapper;
 
     public CategoryDto addCategory(CategoryRequest request) {
         Category parentCategory = null;
@@ -76,5 +78,17 @@ public class CategoriesService {
         }
 
         categoryRepository.delete(category);
+    }
+
+    public List<ProductDto> findAllCategoryProducts(Integer id) {
+        Category category = categoryRepository.findCategoryById(id);
+
+        if (category == null) {
+            throw new NotFoundException("Category with id " + id + " not found.");
+        }
+
+        return productRepository.findProductsByCategory(category).stream().map(
+                product -> customProductMapper.entityToDto(product, product.getVariant(), product.getCategory())
+        ).toList();
     }
 }

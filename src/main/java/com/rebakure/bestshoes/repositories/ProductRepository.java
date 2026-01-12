@@ -1,5 +1,6 @@
 package com.rebakure.bestshoes.repositories;
 
+import com.rebakure.bestshoes.entities.Category;
 import com.rebakure.bestshoes.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findProductsByNameLikeIgnoreCase(String name);
 
     List<Product> findProductsByBasePriceLessThanEqual(BigDecimal maxPrice);
+
+    List<Product> findProductsByCategory(Category category);
 }
