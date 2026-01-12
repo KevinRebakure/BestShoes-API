@@ -3,6 +3,7 @@ package com.rebakure.bestshoes.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.ProductRequest;
+import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.services.ProductsService;
 import org.junit.jupiter.api.MediaType;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,4 +71,25 @@ class ProductsControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void getProduct_existingId_returns200() throws Exception {
+        ProductDto response = new ProductDto();
+        response.setId(1L);
+
+        when(productsService.findProductById(1L)).thenReturn(response);
+
+        mockMvc.perform(get("/products/{id}", 1L))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProduct_nonExistingId_returns404() throws Exception {
+        when(productsService.findProductById(99L))
+                .thenThrow(new NotFoundException("Product not found"));
+
+        mockMvc.perform(get("/products/{id}", 99L))
+                .andExpect(status().isNotFound());
+    }
+
 }
