@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -20,9 +21,13 @@ public class OrdersController {
     private final OrdersService ordersService;
 
     @PostMapping
-    public ResponseEntity<OrderDto> addOrder(@Valid @RequestBody OrderRequest request) {
+    public ResponseEntity<OrderDto> addOrder(
+            @Valid @RequestBody OrderRequest request,
+            UriComponentsBuilder uriBuilder) {
         var dto = ordersService.addOrder(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
+        var uri = uriBuilder.path("/orders/{id}").buildAndExpand(dto.getId()).toUri();
+        return ResponseEntity.created(uri).body(dto);
 
     }
 

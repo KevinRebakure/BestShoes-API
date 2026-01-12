@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -20,9 +21,13 @@ public class CollectionsController {
     private final CollectionsService collectionsService;
 
     @PostMapping
-    public ResponseEntity<CollectionDto> addCollection(@Valid @RequestBody CollectionRequest request) {
+    public ResponseEntity<CollectionDto> addCollection(
+            @Valid @RequestBody CollectionRequest request,
+            UriComponentsBuilder uriBuilder) {
         var dto = collectionsService.addCollection(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
+        var uri = uriBuilder.path("/collections/{id}").buildAndExpand(dto.getId()).toUri();
+        return ResponseEntity.created(uri).body(dto);
 
     }
 
