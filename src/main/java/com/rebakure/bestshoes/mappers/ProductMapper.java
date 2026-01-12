@@ -12,6 +12,7 @@ public interface ProductMapper {
     @Mapping(source = "variant.size", target = "size")
     @Mapping(source = "variant.material", target = "material")
     @Mapping(source = "variant.brand", target = "brand")
+    @Mapping(source = "variant.stockKeepingUnit", target = "stockKeepingUnit")
     ProductDto entityToDto(Product product);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

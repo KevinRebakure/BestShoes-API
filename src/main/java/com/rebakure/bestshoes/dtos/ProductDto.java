@@ -15,4 +15,5 @@ public class ProductDto {
     private String material;
     private String color;
     private String size;
+    private String stockKeepingUnit;
 }
