@@ -1,5 +1,6 @@
 package com.rebakure.bestshoes.services;
 
+import com.rebakure.bestshoes.common.SKU;
 import com.rebakure.bestshoes.dtos.UpdateVariantRequest;
 import com.rebakure.bestshoes.dtos.VariantDto;
 import com.rebakure.bestshoes.dtos.VariantRequest;
@@ -41,6 +42,8 @@ public class VariantsService {
        // Handling other database errors like unique constraint on sku column
         try {
             var result = variantMapper.requestToEntity(request);
+            SKU sku = new SKU(result);
+            result.setStockKeepingUnit(sku.getSku());
             variantRepository.save(result);
 
             return variantMapper.entityToDto(result);

@@ -12,5 +12,4 @@ public class UpdateVariantRequest {
     private String size;
     private BigDecimal price;
     private Integer quantity;
-    private String stockKeepingUnit;
 }

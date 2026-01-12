@@ -1,10 +1,20 @@
 package com.rebakure.bestshoes.common;
 
-import lombok.Data;
-import org.springframework.stereotype.Component;
+import com.rebakure.bestshoes.entities.Variant;
+import lombok.Getter;
 
-@Component
-@Data
 public class SKU {
-    private String sku;
+    @Getter
+    private final String sku;
+
+    public SKU(Variant variant) {
+        this.sku = hash(variant.getBrand()) + "-" +
+                hash(variant.getColor()) + "-" +
+                hash(variant.getMaterial()) + "-" +
+                variant.getSize().replace(" ", "");
+    }
+
+    private String hash(String string) {
+        return string.substring(0, 4).toUpperCase();
+    }
 }

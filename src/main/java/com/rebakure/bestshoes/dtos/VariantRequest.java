@@ -25,7 +25,4 @@ public class VariantRequest {
 
     @NotNull(message = "Provide the number of shoes in store")
     private Integer quantity;
-
-    @NotBlank(message = "Provide the stock keeping unit")
-    private String stockKeepingUnit;
 }
