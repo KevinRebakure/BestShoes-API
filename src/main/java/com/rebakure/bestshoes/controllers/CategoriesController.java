@@ -2,6 +2,7 @@ package com.rebakure.bestshoes.controllers;
 
 import com.rebakure.bestshoes.dtos.CategoryDto;
 import com.rebakure.bestshoes.dtos.CategoryRequest;
+import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.services.CategoriesService;
 import jakarta.validation.constraints.Min;
@@ -39,6 +40,13 @@ public class CategoriesController {
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return ResponseEntity.ok().body(categoriesService.findAllCategories());
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<List<ProductDto>> getCategoryProducts(
+            @PathVariable Integer id
+    ) {
+        return ResponseEntity.ok().body(categoriesService.findAllCategoryProducts(id));
     }
 
     @DeleteMapping("/{id}")
