@@ -54,7 +54,11 @@ private final JwtConfig jwtConfig;
                 .getPayload();
     }
 
-    public Long getUserId(String token) {
+    public Long getUserIdFromToken(String token) {
         return Long.valueOf(getClaims(token).getSubject());
+    }
+
+    public String getRoleFromToken(String token){
+        return getClaims(token).get("role", String.class);
     }
 }

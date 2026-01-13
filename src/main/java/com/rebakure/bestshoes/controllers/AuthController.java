@@ -89,7 +89,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        var userId = jwtService.getUserId(refreshToken);
+        var userId = jwtService.getUserIdFromToken(refreshToken);
         var user = userRepository.findUserById(userId);
         var accessToken = jwtService.generateAccessToken(user);
 
