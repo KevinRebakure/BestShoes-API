@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // This overload is for authenticated user
         var authentication = new UsernamePasswordAuthenticationToken(
-                jwtService.getEmailFromToken(token),
+                jwtService.getUserId(token),
                 null,
                 null);
 
