@@ -37,7 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // This overload is for authenticated user
+        /* UsernamePasswordAuthenticationToken has 2 constructor overloads.
+        One for unauthenticated user and another one for authenticated user.
+        This overload is for authenticated user */
         var authentication = new UsernamePasswordAuthenticationToken(
                 jwt.getUserId(),
                 null,
