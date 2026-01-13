@@ -8,6 +8,8 @@ import com.rebakure.bestshoes.mappers.UserMapper;
 import com.rebakure.bestshoes.repositories.UserRepository;
 import com.rebakure.bestshoes.services.AuthService;
 import com.rebakure.bestshoes.services.JwtService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private AuthService authService;
+    private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final JwtService  jwtService;
 
@@ -37,7 +39,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
-            @Valid @RequestBody LoginRequest request) {
+            @Valid @RequestBody LoginRequest request,
+            HttpServletResponse response) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -47,9 +50,18 @@ public class AuthController {
 
         var user = userRepository.findUserByEmail(request.getEmail());
 
-        var token = jwtService.generateToken(user);
+        var accessToken = jwtService.generateAccessToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        var cookie = new Cookie("refreshToken",  refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/auth/refresh");
+        cookie.setMaxAge(1000 * 60 * 60 * 24 * 7); // 1 week
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+
+
+        return ResponseEntity.ok(new JwtResponse(accessToken));
     }
 
     @GetMapping("/me")
