@@ -1,5 +1,6 @@
 package com.rebakure.bestshoes.controllers;
 
+import com.rebakure.bestshoes.config.JwtConfig;
 import com.rebakure.bestshoes.dtos.JwtResponse;
 import com.rebakure.bestshoes.dtos.LoginRequest;
 import com.rebakure.bestshoes.dtos.RegisterUserRequest;
@@ -29,6 +30,7 @@ public class AuthController {
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final JwtService  jwtService;
+    private final JwtConfig  jwtConfig;
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(
@@ -56,7 +58,7 @@ public class AuthController {
         var cookie = new Cookie("refreshToken",  refreshToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/auth/refresh");
-        cookie.setMaxAge(1000 * 60 * 60 * 24 * 7); // 1 week
+        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration()); // 1 week
         cookie.setSecure(true);
         response.addCookie(cookie);
 
