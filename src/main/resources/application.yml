@@ -14,7 +14,7 @@ spring:
       fail-on-unknown-properties: true
   jwt:
     secret: ${JWT_SECRET}
-    accessTokenExpiration: 300 # 5 min
+    accessTokenExpiration: 900 # 15 min
     refreshTokenExpiration: 604800 # 1 week
 logging:
   level:
