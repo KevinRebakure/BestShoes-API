@@ -9,6 +9,8 @@ import com.rebakure.bestshoes.mappers.UserMapper;
 import com.rebakure.bestshoes.repositories.UserRepository;
 import com.rebakure.bestshoes.services.AuthService;
 import com.rebakure.bestshoes.services.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@Tag(name = "Auth", description = "Simple auth system with RBAC built with Spring Security")
 public class AuthController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -66,6 +69,10 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }
 
+    @Operation(
+            summary = "Get the current logged in user",
+            description = "You can use it to get info of the currently logged in user"
+    )
     @GetMapping("/me")
     public ResponseEntity<UserDto> me() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -5,6 +5,7 @@ import com.rebakure.bestshoes.dtos.CategoryRequest;
 import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.services.CategoriesService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/categories")
 @AllArgsConstructor
 @Validated
+@Tag(name = "Categories")
 public class CategoriesController {
     private final CategoriesService categoriesService;
 
