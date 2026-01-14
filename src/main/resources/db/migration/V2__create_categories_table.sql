@@ -7,5 +7,10 @@ create table categories
     parent_id integer
         constraint categories_categories_id_fk
             references categories
+            on delete cascade
 );
 
+alter table products
+    add constraint products_categories_id_fk
+        foreign key (category_id) references categories (id)
+            on delete cascade;

@@ -8,6 +8,5 @@ create table users
         constraint unique_email
             unique,
     password varchar(255) not null,
-    role     varchar(50)  not null
+    role     varchar(50) default null
 );
-
