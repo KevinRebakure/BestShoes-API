@@ -4,6 +4,7 @@ import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.ProductRequest;
 import com.rebakure.bestshoes.dtos.UpdateProductRequest;
 import com.rebakure.bestshoes.services.ProductsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/products")
 @AllArgsConstructor
 @Validated
+@Tag(name = "Products")
 public class ProductsController {
     private final ProductsService productsService;
 

@@ -2,6 +2,8 @@ package com.rebakure.bestshoes.controllers;
 
 import com.rebakure.bestshoes.dtos.*;
 import com.rebakure.bestshoes.services.CollectionsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequestMapping("/collections")
 @AllArgsConstructor
 @Validated
+@Tag(name = "Collections", description = "You can use collections to categories products by for example seasons in the year")
 public class CollectionsController {
     private final CollectionsService collectionsService;
 
@@ -66,6 +69,10 @@ public class CollectionsController {
 
     // Collection items
 
+    @Operation(
+            summary = "Add a product to a collection",
+            description = "The same product can be added to multiple collections"
+    )
     @PostMapping("/{id}/add-item")
     public ResponseEntity<CollectionItemDto> addCollectionItem(
             @PathVariable

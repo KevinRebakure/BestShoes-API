@@ -4,6 +4,7 @@ import com.rebakure.bestshoes.dtos.UpdateVariantRequest;
 import com.rebakure.bestshoes.dtos.VariantDto;
 import com.rebakure.bestshoes.dtos.VariantRequest;
 import com.rebakure.bestshoes.services.VariantsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/variants")
 @AllArgsConstructor
 @Validated
+@Tag(name = "Variants")
 public class VariantsController {
     private final VariantsService variantsService;
 

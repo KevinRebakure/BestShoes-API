@@ -2,6 +2,8 @@ package com.rebakure.bestshoes.controllers;
 
 import com.rebakure.bestshoes.dtos.*;
 import com.rebakure.bestshoes.services.OrdersService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -17,10 +19,15 @@ import java.util.List;
 @RequestMapping("/orders")
 @AllArgsConstructor
 @Validated
+@Tag(name = "Orders")
 public class OrdersController {
     private final OrdersService ordersService;
 
     @PostMapping
+    @Operation(
+            summary = "Create an order",
+            description = "This is essentially like creating a cart and later on you can add items to it via POST /orders/{id}/add-item"
+    )
     public ResponseEntity<OrderDto> addOrder(
             @Valid @RequestBody OrderRequest request,
             UriComponentsBuilder uriBuilder) {
@@ -70,6 +77,10 @@ public class OrdersController {
     }
 
     @PatchMapping("/{id}/items/{itemId}")
+    @Operation(
+            summary = "Update the number of items of a product you want to order",
+            description = "We don't allow swapping products of a particular order item. You can only increase or decrease the number of items you want. Pass the amount (positive / negative) in the body as the quantity. A negative number means you are reducing the number of products you want in that particular item"
+    )
     public ResponseEntity<OrderItemDto> updateOrderItem(
             @PathVariable
             @Min(value = 1, message = "id should be a positive integer")
