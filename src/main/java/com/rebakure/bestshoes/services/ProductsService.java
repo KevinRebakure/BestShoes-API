@@ -106,6 +106,7 @@ public class ProductsService {
         );
         var variant = variantRepository.findById(product.getVariant().getId()).get();
         variant.setQuantity(variant.getQuantity() - 1);
+        variant.removeProduct(product);
         variantRepository.save(variant);
 
         productRepository.delete(product);

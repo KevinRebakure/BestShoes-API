@@ -5,12 +5,13 @@ import com.rebakure.bestshoes.dtos.CategoryRequest;
 import com.rebakure.bestshoes.dtos.ProductDto;
 import com.rebakure.bestshoes.dtos.UpdateCategoryRequest;
 import com.rebakure.bestshoes.services.CategoriesService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -22,9 +23,13 @@ public class CategoriesController {
     private final CategoriesService categoriesService;
 
     @PostMapping
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryRequest request) {
+    public ResponseEntity<CategoryDto> addCategory(
+            @Valid  @RequestBody CategoryRequest request,
+            UriComponentsBuilder uriBuilder) {
         var dto = categoriesService.addCategory(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
+        var uri = uriBuilder.path("/categories/{id}").buildAndExpand(dto.getId()).toUri();
+        return ResponseEntity.created(uri).body(dto);
 
     }
 
