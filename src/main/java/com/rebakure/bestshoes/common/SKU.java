@@ -15,6 +15,6 @@ public class SKU {
     }
 
     private String hash(String string) {
-        return string.substring(0, 4).toUpperCase();
+        return string.substring(0, Math.min(4, string.length())).toUpperCase();
     }
 }

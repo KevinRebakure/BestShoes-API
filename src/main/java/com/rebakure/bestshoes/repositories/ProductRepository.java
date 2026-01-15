@@ -10,9 +10,9 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findProductById(Long id);
 
-    List<Product> findProductsByNameLikeIgnoreCase(String name);
-
     List<Product> findProductsByBasePriceLessThanEqual(BigDecimal maxPrice);
 
     List<Product> findProductsByCategory(Category category);
+
+    List<Product> findProductsByNameContainsIgnoreCase(String name);
 }

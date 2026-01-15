@@ -113,7 +113,8 @@ public class ProductsService {
     }
 
     public List<ProductDto> findProductByName(String name) {
-        var products = productRepository.findProductsByNameLikeIgnoreCase(name);
+//        var products = productRepository.findProductsByNameLikeIgnoreCase(name);
+        var products = productRepository.findProductsByNameContainsIgnoreCase(name);
         return products.stream().map(product ->
                 customProductMapper.entityToDto(product, product.getVariant(),  product.getCategory())
         ).toList();
