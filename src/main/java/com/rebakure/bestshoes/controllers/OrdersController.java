@@ -38,6 +38,20 @@ public class OrdersController {
 
     }
 
+    @PostMapping("/{id}/checkout")
+    @Operation(
+            summary = "Checkout for this order",
+            description = "This is for making payments and confirming"
+    )
+    public ResponseEntity<CheckoutResponse> checkout(
+            @PathVariable
+            @Min(value = 1, message = "id should be a positive integer")
+            Long id
+    ) {
+        var checkoutResponse = ordersService.checkout(id);
+        return ResponseEntity.ok(checkoutResponse);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getOrder(
             @PathVariable
