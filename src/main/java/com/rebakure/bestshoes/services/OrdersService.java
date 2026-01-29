@@ -1,6 +1,5 @@
 package com.rebakure.bestshoes.services;
 
-import com.rebakure.bestshoes.common.OrderStatus;
 import com.rebakure.bestshoes.dtos.*;
 import com.rebakure.bestshoes.entities.Order;
 import com.rebakure.bestshoes.entities.OrderItem;
@@ -202,9 +201,6 @@ public class OrdersService {
         if (order.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("You must order at least 1 item");
         }
-
-        order.setStatus(OrderStatus.PAID.toString());
-        orderRepository.save(order);
 
         CheckoutEvent checkoutEvent = new CheckoutEvent();
         checkoutEvent.setOrderId(order.getId());
