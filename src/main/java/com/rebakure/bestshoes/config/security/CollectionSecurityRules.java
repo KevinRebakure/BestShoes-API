@@ -1,4 +1,4 @@
-package com.rebakure.bestshoes.config;
+package com.rebakure.bestshoes.config.security;
 
 import com.rebakure.bestshoes.common.Roles;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -6,9 +6,9 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.stereotype.Component;
 
 @Component
-public class CategorySecurityRules implements  SecurityRules {
+public class CollectionSecurityRules implements  SecurityRules {
     @Override
     public void configure(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-        registry.requestMatchers("/categories/**").hasRole(Roles.ADMIN.toString());
+        registry.requestMatchers( "/collections/**").hasRole(Roles.ADMIN.toString());
     }
 }

@@ -16,6 +16,8 @@ spring:
     secret: ${JWT_SECRET}
     accessTokenExpiration: 900 # 15 min
     refreshTokenExpiration: 604800 # 1 week
+  kafka:
+    bootstrap-servers: localhost:9092
 logging:
   level:
     org.springframework.security: DEBUG
