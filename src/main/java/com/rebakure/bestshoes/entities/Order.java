@@ -1,5 +1,6 @@
 package com.rebakure.bestshoes.entities;
 
+import com.rebakure.bestshoes.common.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,6 +40,6 @@ public class Order {
     @NotNull
     @ColumnDefault("'PENDING'")
     @Column(name = "status", nullable = false, length = 10)
-    private String status = "PENDING";
+    private String status = OrderStatus.PENDING.toString();
 
 }

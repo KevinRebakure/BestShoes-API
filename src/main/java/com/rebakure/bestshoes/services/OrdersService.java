@@ -1,5 +1,6 @@
 package com.rebakure.bestshoes.services;
 
+import com.rebakure.bestshoes.common.OrderStatus;
 import com.rebakure.bestshoes.dtos.*;
 import com.rebakure.bestshoes.entities.Order;
 import com.rebakure.bestshoes.entities.OrderItem;
@@ -202,7 +203,7 @@ public class OrdersService {
             throw new BadRequestException("You must order at least 1 item");
         }
 
-        order.setStatus("PAID");
+        order.setStatus(OrderStatus.PAID.toString());
         orderRepository.save(order);
 
         return new CheckoutResponse("The order with id " + id + " has been paid successfully. Will be delivered in 30 - 45 min.");
