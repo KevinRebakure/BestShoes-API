@@ -21,11 +21,11 @@ public class CheckoutJob {
     )
     @Async
     void checkout(CheckoutEvent checkoutEvent) throws InterruptedException {
-        System.out.println("🚀 Listening on Kafka Listener");
-        System.out.println("⌛ Going to sleep for 10 seconds");
+        System.out.println("Listening on Kafka Listener");
+        System.out.println("Going to sleep for 10 seconds");
         Thread.sleep(10_000);
 
-        System.out.println("🚀 Updating the database");
+        System.out.println("Updating the database");
         var order = orderRepository.findById(checkoutEvent.getOrderId()).orElse(null);
 
         if (order != null) {
@@ -43,6 +43,6 @@ public class CheckoutJob {
             });
         }
 
-        System.out.println("✅ Finished execution");
+        System.out.println("Finished execution");
     }
 }
