@@ -4,6 +4,7 @@ import com.rebakure.bestshoes.common.OrderStatus;
 import com.rebakure.bestshoes.dtos.CheckoutEvent;
 import com.rebakure.bestshoes.repositories.OrderRepository;
 import com.rebakure.bestshoes.repositories.VariantRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
@@ -20,6 +21,7 @@ public class CheckoutJob {
             groupId = "checkouts"
     )
     @Async
+    @Transactional
     void checkout(CheckoutEvent checkoutEvent) throws InterruptedException {
         System.out.println("Listening on Kafka Listener");
         System.out.println("Going to sleep for 10 seconds");
