@@ -1,5 +1,6 @@
 package com.rebakure.bestshoes.services;
 
+import com.rebakure.bestshoes.dtos.CheckoutEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,8 @@ public class KafkaListeners {
             topics = "checkout-topic",
             groupId = "checkouts"
     )
-    void checkout() {
-        System.out.println("Listening on Kafka Listener");
+    void checkout(CheckoutEvent checkoutEvent) {
+        System.out.println("🚀 Listening on Kafka Listener");
+        System.out.println(checkoutEvent.toString());
     }
 }
