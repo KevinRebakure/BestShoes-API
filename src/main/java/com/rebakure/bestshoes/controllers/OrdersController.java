@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,6 +23,7 @@ import java.util.List;
 @Tag(name = "Orders")
 public class OrdersController {
     private final OrdersService ordersService;
+    private final KafkaTemplate<String, CheckoutEvent> kafkaTemplate;
 
     @PostMapping
     @Operation(
@@ -48,8 +50,11 @@ public class OrdersController {
             @Min(value = 1, message = "id should be a positive integer")
             Long id
     ) {
-        var checkoutResponse = ordersService.checkout(id);
-        return ResponseEntity.ok(checkoutResponse);
+        CheckoutEvent checkoutEvent = ordersService.checkout(id);
+
+        kafkaTemplate.send("checkout-topic", checkoutEvent);
+
+        return ResponseEntity.ok(new CheckoutResponse("The order has been successfully checked out. You will receive your delivery in 30 - 45 min."));
     }
 
     @GetMapping("/{id}")

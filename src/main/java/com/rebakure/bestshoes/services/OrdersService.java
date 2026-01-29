@@ -194,7 +194,7 @@ public class OrdersService {
         return basePrice.multiply(BigDecimal.valueOf(numberOfItems));
     }
 
-    public CheckoutResponse checkout(Long id) {
+    public CheckoutEvent checkout(Long id) {
         var order = orderRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Order does not exist")
         );
@@ -206,6 +206,24 @@ public class OrdersService {
         order.setStatus(OrderStatus.PAID.toString());
         orderRepository.save(order);
 
-        return new CheckoutResponse("The order with id " + id + " has been paid successfully. Will be delivered in 30 - 45 min.");
+        CheckoutEvent checkoutEvent = new CheckoutEvent();
+        checkoutEvent.setOrderId(order.getId());
+        checkoutEvent.setUserId(order.getUser().getId());
+
+        List<OrderItemSummary> itemSummaries = order.getOrderItems()
+                .stream()
+                .map(item -> {
+                    OrderItemSummary itemSummary = new OrderItemSummary();
+
+                    itemSummary.setQuantity(item.getQuantity());
+                    itemSummary.setVariantId(item.getProduct().getVariant().getId());
+
+                    return itemSummary;
+                })
+                .toList();
+
+        checkoutEvent.setItems(itemSummaries);
+
+        return checkoutEvent;
     }
 }

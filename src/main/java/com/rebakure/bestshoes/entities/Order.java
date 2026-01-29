@@ -10,6 +10,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,5 +43,9 @@ public class Order {
     @ColumnDefault("'PENDING'")
     @Column(name = "status", nullable = false, length = 10)
     private String status = OrderStatus.PENDING.toString();
+
+    @OneToMany
+    @JoinColumn(name = "order_id")
+    private Set<OrderItem> orderItems = new LinkedHashSet<>();
 
 }
