@@ -1,16 +1,14 @@
-package com.rebakure.bestshoes.config;
+package com.rebakure.bestshoes.config.security;
 
+import com.rebakure.bestshoes.common.Roles;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SwaggerSecurityRules implements  SecurityRules {
+public class VariantsSecurityRules implements  SecurityRules {
     @Override
     public void configure(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-        registry.requestMatchers(
-                "/swagger-ui/**",
-                "/swagger-ui.html",
-                "/v3/api-docs/**").permitAll();
+        registry.requestMatchers("/variants/**").hasRole(Roles.ADMIN.toString());
     }
 }

@@ -1,4 +1,4 @@
-package com.rebakure.bestshoes.config;
+package com.rebakure.bestshoes.config.security;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

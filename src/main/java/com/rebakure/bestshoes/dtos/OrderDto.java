@@ -11,4 +11,5 @@ public class OrderDto {
     private Long id;
     private Long userId;
     private BigDecimal totalAmount;
+    private String status;
 }
