@@ -2,7 +2,7 @@ name: Build, test and deploy BestShoes API
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 jobs:
   build:
