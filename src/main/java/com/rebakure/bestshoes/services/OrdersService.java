@@ -7,7 +7,10 @@ import com.rebakure.bestshoes.exceptions.BadRequestException;
 import com.rebakure.bestshoes.exceptions.NotFoundException;
 import com.rebakure.bestshoes.mappers.OrderItemMapper;
 import com.rebakure.bestshoes.mappers.OrderMapper;
-import com.rebakure.bestshoes.repositories.*;
+import com.rebakure.bestshoes.repositories.OrderItemRepository;
+import com.rebakure.bestshoes.repositories.OrderRepository;
+import com.rebakure.bestshoes.repositories.ProductRepository;
+import com.rebakure.bestshoes.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,6 @@ public class OrdersService {
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
     private final UserRepository userRepository;
-    private final VariantRepository variantRepository;
 
     @Transactional
     public OrderDto addOrder(OrderRequest request) {
@@ -189,5 +191,35 @@ public class OrdersService {
 
     private BigDecimal calculateTotalAmount(int numberOfItems, BigDecimal basePrice) {
         return basePrice.multiply(BigDecimal.valueOf(numberOfItems));
+    }
+
+    public CheckoutEvent checkout(Long id) {
+        var order = orderRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Order does not exist")
+        );
+
+        if (order.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BadRequestException("You must order at least 1 item");
+        }
+
+        CheckoutEvent checkoutEvent = new CheckoutEvent();
+        checkoutEvent.setOrderId(order.getId());
+        checkoutEvent.setUserId(order.getUser().getId());
+
+        List<OrderItemSummary> itemSummaries = order.getOrderItems()
+                .stream()
+                .map(item -> {
+                    OrderItemSummary itemSummary = new OrderItemSummary();
+
+                    itemSummary.setQuantity(item.getQuantity());
+                    itemSummary.setVariantId(item.getProduct().getVariant().getId());
+
+                    return itemSummary;
+                })
+                .toList();
+
+        checkoutEvent.setItems(itemSummaries);
+
+        return checkoutEvent;
     }
 }

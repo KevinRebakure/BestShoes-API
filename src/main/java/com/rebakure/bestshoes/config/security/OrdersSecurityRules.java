@@ -1,4 +1,4 @@
-package com.rebakure.bestshoes.config;
+package com.rebakure.bestshoes.config.security;
 
 import com.rebakure.bestshoes.common.Roles;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
